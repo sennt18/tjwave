@@ -69,8 +69,9 @@ function launcLED(){
     var randIdx = Math.floor(Math.random() * colors.length);
     var randColor = colors[randIdx];
     //console.log(randColor)
-    color[0] = colorPalette[randColor];
-    ws281x.render(color);
+    //color[0] = colorPalette[randColor];
+    console.log(randColor, colorPalette[randColor]);
+    ws281x.render(colorPalette[randColor]);
   }, lightinterval);
 }
 
