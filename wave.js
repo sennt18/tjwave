@@ -113,9 +113,9 @@ function parseText(str){
     speak("Ok, I will wave my arm. Just for you.");
     waveArm("wave") ;
   }else if (introduceYourself){
-    speak(" Hi, my name is TJ. I'm an open source project designed to help you access Watson Services in a fun way. You can 3D print me or laser cut me, then use one of my recipes to bring me to life. I can't wait to see what we do together. ");
+    speak(" Hi, my name is TJ.");
   }else if (whatisYourname){
-    speak(" My name is TJ. You can call me TJ Bot");
+    speak(" My name is TJ Bot. You can call me TJ");
   }else if (canYouDance){
     dance();
   }else{
