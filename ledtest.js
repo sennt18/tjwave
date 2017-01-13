@@ -71,13 +71,25 @@ function parseText(str){
 
   if (redlighton) {
     speak("Okay. Here you go.");
+    var Gpio = require('onoff').Gpio,
     led = new Gpio(17, 'out');
+    var iv = setInterval(function(){
+    led.writeSync(led.readSync() === 0 ? 1 : 1)
+    }, 500);
   }else if (greenlighton){
     speak("Here is green.");
+    var Gpio = require('onoff').Gpio,
     led = new Gpio(18, 'out');
+    var iv = setInterval(function(){
+    led.writeSync(led.readSync() === 0 ? 1 : 1)
+    }, 500);
   }else if (bluelighton){
     speak("Good choice. I like the color blue too.");
+    var Gpio = require('onoff').Gpio,
     led = new Gpio(27, 'out');
+    var iv = setInterval(function(){
+    led.writeSync(led.readSync() === 0 ? 1 : 1)
+    }, 500);
   }else if (lightoff){
     speak("If you insist.")
     led.writeSync(0);
