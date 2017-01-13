@@ -386,7 +386,100 @@ function findPeaks(pcmdata, samplerate, threshold){
 *********************************************************************
 */
 
+var VisualRecognitionV3 = require('watson-developer-cloud/visual-recognition/v3');
+var watson = require('watson-developer-cloud');
+var fs = require('fs');
+var config = require("./config");
+var child_process = require('child_process');
 
+var visual_recognition = new VisualRecognitionV3({
+  api_key: config.VisionKey,
+  version_date: config.VisionVersion
+});
+
+
+var snapinterval =  20000 ; // take a picture every X milliseconds
+var i = 0 ;
+
+
+/**
+* Process Images every X seconds
+* @return {null} null
+*/
+function launchVision(){
+  var filename = 'photos/pic_'+i+'.jpg';
+  //var args = ['-vf', '-hf','-w', '960', '-h', '720', '-o', filename, '-t', '1'];
+  var args = ['-w', '960', '-h', '720', '-o', filename, '-t', '5'];
+  var spawn = child_process.spawn('raspistill', args);
+  spawn.on('exit', function(code) {
+    console.log('A photo is saved as '+filename+ ' with exit code, ' + code);
+    let timestamp = Date.now();
+    processImage(filename)
+    i++;
+  });
+}
+
+
+/**
+* [processImage send the given image file to Watson Vision Recognition for Analysis]
+* @param  {[type]} imagefile [description]
+* @return {[type]}           [description]
+*/
+function processImage(imagefile){
+  var params = {
+    images_file: fs.createReadStream(imagefile)
+  };
+
+  var resultstring = "The objects I see are " ;
+  visual_recognition.classify(params, function(err, res) {
+    if (err){
+      console.log(err);
+    } else {
+      result = res.images[0].classifiers[0].classes
+      if(result !== null & result.length > 0){
+        result.forEach(function(obj){
+          //console.log(obj.class)
+          console.log(obj)
+          if (obj.score > 0.6){
+            resultstring = resultstring + ", " + obj.class
+          }
+
+        })
+        console.log(resultstring)
+        speak(resultstring);
+      }else {
+        resultstring = "I could not understand that image. Try another?"
+        console.log(resultstring)
+        speak(resultstring);
+      }
+    }
+  });
+}
+
+var ws281x = require('rpi-ws281x-native');
+var NUM_LEDS = 1;        // Number of LEDs
+ws281x.init(NUM_LEDS);
+var color = new Uint32Array(NUM_LEDS);  // array that stores colors for leds
+
+var colorPalette = {
+  "red": 0x00ff00,
+  "green": 0xff0000,
+  "blue": 0x0000ff,
+  "purple": 0x008080,
+  "yellow": 0xc1ff35,
+  "magenta": 0x00ffff,
+  "orange": 0xa5ff00,
+  "aqua": 0xff00ff,
+  "white": 0xffffff
+}
+
+setLEDColor("white", 255);
+
+function setLEDColor(randColor, brightness){
+  color[0] = colorPalette[randColor];
+  ws281x.render(color);
+  ws281x.setBrightness(brightness);
+}
 
 
 
