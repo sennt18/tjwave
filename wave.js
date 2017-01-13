@@ -107,7 +107,7 @@ function parseText(str){
   var introduceYourself = str.indexOf("introduce") >= 0 && str.indexOf("yourself") >= 0  ;
   var whatisYourname = str.indexOf("what") >= 0 && str.indexOf("your") >= 0 && str.indexOf("name") >= 0  ;
   var canYouDance = str.indexOf("can") >= 0 && str.indexOf("you") >= 0 && str.indexOf("dance") >= 0  ;
-
+  var introductions = str.index0f("my") >= 0 && str.index0f("name") >= 0 && str.index0f("is") >= 0  ;
 
   if (containsWaveArm) {
     speak("Ok, I will wave my arm. Just for you.");
@@ -116,6 +116,8 @@ function parseText(str){
     speak(" Hi, my name is TJ.");
   }else if (whatisYourname){
     speak(" My name is TJ Bot. You can call me TJ");
+  }else if (introductions){
+    speak(" Hi. My name is TJ.");
   }else if (canYouDance){
     dance();
   }else{
