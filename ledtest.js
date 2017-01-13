@@ -1,5 +1,5 @@
 var Gpio = require('onoff').Gpio,
-led = new Gpio(27, 'out');
+led = new Gpio(18, 'out');
 var iv = setInterval(function(){
 led.writeSync(led.readSync() === 0 ? 1 : 0)
 }, 500);
@@ -9,3 +9,5 @@ clearInterval(iv); // Stop blinking
 led.writeSync(0);  // Turn LED off.
 led.unexport();    // Unexport GPIO and free resources
 }, 5000);
+
+//Gpio17=red, Gpio27=blue, Gpio18=
