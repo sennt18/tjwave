@@ -1,6 +1,5 @@
 /**
 
-
 /************************************************************************
 * Control a NeoPixel LED unit and servo motor connected to a Raspberry Pi pin through voice commands
 * Must run with root-level protection
