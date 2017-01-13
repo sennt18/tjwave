@@ -235,7 +235,7 @@ function decodeSoundFile(soundfile){
 
 //dance();
 function dance(){
-  speak("Sure. I am decoding a sound file that I will dance to. This may take a couple of seconds.") ;
+  speak("Sure. I will play a song.") ;
   decodeSoundFile(soundfile);
 }
 
