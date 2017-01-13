@@ -64,8 +64,8 @@ textStream.on('error', function(err) {
 });
 
 function parseText(str){
-  var redlighton = str.index0f("read") >= 0 || str.indexOf("red") >= 0  ;
-  var greenlighton = str.indexOf("on") >= 0 && str.indexOf("green") >= 0  ;
+  var redlighton = str.indexOf("read") >= 0 || str.indexOf("red") >= 0  ;
+  var greenlighton = str.indexOf("green") >= 0  ;
   var bluelighton = str.indexOf("on") >= 0 && str.indexOf("blue") >= 0  ;
   var lightoff = str.indexOf("off")  ;
 
