@@ -92,7 +92,11 @@ function parseText(str){
     }, 500);
   }else if (lightoff){
     speak("If you insist.")
-    led.writeSync(0);
+    setTimeout(function() {
+    clearInterval(iv); // Stop blinking
+    led.writeSync(0);  // Turn LED off.
+    led.unexport();    // Unexport GPIO and free resources
+}, 100);
   }else{
     if (str.length > 10){
       speak("Sorry. Could you say that command again?")
