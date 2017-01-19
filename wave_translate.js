@@ -22,7 +22,7 @@ var text_to_speech = watson.text_to_speech({
 });
 
 var watson = require('watson-developer-cloud');
-var language-translator = watson.language-translator({
+var language_translator = watson.language_translator({
   username: config.TUsername,
   password: config.TPassword,
   version: 'v2'
@@ -315,7 +315,7 @@ function discoParty() {
 *************************************************************************/
 
 function translatetext(msg) {
-  language-translator.translate({
+  language_translator.translate({
     text: msg.substr (msg.indexOf("translate"), msg.length),
     source: 'en',
     target: 'es'
