@@ -355,4 +355,3 @@ function translatetext() {
       console.log(translation);
   }
 });
-}
