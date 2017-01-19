@@ -54,6 +54,7 @@ micInputStream.on('silence', function() {
 
 micInstance.start();
 console.log("TJ is listening, you may speak now.");
+ws281x.render('blue');
 
 /************************************************************************
 * Step #3: Converting your Speech Commands to Text
@@ -112,7 +113,8 @@ function parseText(str){
     translatetext(str);
   }else{
     if (str.length > 10){
-      speak("sorry, I haven't been taught to understand that.")
+      speak("Sorry. Could you repeat that?")
+       ws281x.render('red')
     }
   }
 }
