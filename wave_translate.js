@@ -315,7 +315,7 @@ function discoParty() {
 *************************************************************************/
 
 function translatetext(msg) {
-  language_translator.translate {
+  language_translator.translate({
     text: msg.substr (msg.indexOf("translate"), msg.length),
     source: 'en',
     target: 'es'
@@ -324,5 +324,5 @@ function translatetext(msg) {
       console.log(err)
     else
       console.log(translation);
-  }
+  })
 }
