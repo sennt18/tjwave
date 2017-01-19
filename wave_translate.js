@@ -322,8 +322,9 @@ function translatetext(msg) {
   }, function(err, translation) {
     if (err)
       console.log(err)
-    else
+    else {
       console.log(translation);
       console.log(translation.translation);
+    }
   })
 }
