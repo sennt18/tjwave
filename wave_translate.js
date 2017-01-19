@@ -324,5 +324,6 @@ function translatetext(msg) {
       console.log(err)
     else
       console.log(translation);
+      speak (translation);
   })
 }
