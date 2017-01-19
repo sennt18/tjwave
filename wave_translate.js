@@ -171,7 +171,28 @@ function speak(textstring){
   micInstance.pause();
   var params = {
     text: textstring,
-    voice: config.voice,
+    voice: config.ENvoice,
+    accept: 'audio/wav'
+  };
+  text_to_speech.synthesize(params).pipe(fs.createWriteStream('output.wav')).on('close', function() {
+
+    soundobject = new Sound("output.wav");
+    soundobject.play();
+    soundobject.on('complete', function () {
+      console.log('Done with playback! for ' + textstring + " iswaving " + iswaving);
+      if (!iswaving && !isplaying) {
+        micInstance.resume();
+      }
+    });
+  });
+}
+
+function speakES(textstring){
+
+  micInstance.pause();
+  var params = {
+    text: textstring,
+    voice: config.ESvoice,
     accept: 'audio/wav'
   };
   text_to_speech.synthesize(params).pipe(fs.createWriteStream('output.wav')).on('close', function() {
@@ -324,7 +345,7 @@ function translatetext(msg) {
       console.log(err)
     else {
       console.log(translation);
-      speak(translation.translations[0].translation);
+      speakES(translation.translations[0].translation);
     }
   })
 }
