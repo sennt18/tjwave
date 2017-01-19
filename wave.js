@@ -314,7 +314,7 @@ var colorPalette = {
     "green": 0xff0000,
     "blue": 0x0000ff,
     "purple": 0x008080,
-    "yellow": 0xc1ff35,
+    "yellow": 0xffff00,
     "magenta": 0x00ffff,
     "orange": 0xa5ff00,
     "aqua": 0xff00ff,
