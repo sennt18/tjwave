@@ -316,7 +316,7 @@ function discoParty() {
 
 function translatetext(msg) {
   language_translator.translate({
-    text: msg.substr (msg.indexOf("translate"), msg.length),
+    text: msg.substr (msg.indexOf("translate") +9, msg.length),
     source: 'en',
     target: 'es'
   }, function(err, translation) {
