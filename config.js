@@ -21,5 +21,5 @@ exports.VisionVersion = '2016-05-19' ;
 exports.version = 'v1' ;
 
 // Credentials for Translation Service
-exports.TPassword = 'kMgDHVS75YnS' ;
-exports.TUsername = '6758b857-d2cd-4fd9-a475-921bdf6f68aa' ;
+exports.TPassword = 'kSiqGjeIitgH' ;
+exports.TUsername = 'cb298f09-f17d-4d9e-b93b-b80711fee8f3' ;
