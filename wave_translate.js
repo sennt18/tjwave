@@ -5,6 +5,30 @@
 var pigpio = require('pigpio')
 pigpio.initialize();
 
+var ws281x = require('rpi-ws281x-native');
+var NUM_LEDS = 1;        // Number of LEDs
+ws281x.init(NUM_LEDS);   // initialize LEDs
+
+var color = new Uint32Array(NUM_LEDS);  // array that stores colors for leds
+color[0] = 0xffffff;                    // default to white
+
+// note that colors are specified as Green-Red-Blue, not Red-Green-Blue
+// e.g. 0xGGRRBB instead of 0xRRGGBB
+var colorPalette = {
+    "red": 0x00ff00,
+    "read": 0x00ff00, // sometimes, STT hears "read" instead of "red"
+    "green": 0xff0000,
+    "blue": 0x0000ff,
+    "purple": 0x008080,
+    "yellow": 0xffff00,
+    "magenta": 0x00ffff,
+    "orange": 0xa5ff00,
+    "aqua": 0xff00ff,
+    "white": 0xffffff,
+    "off": 0x000000,
+    "on": 0xffffff
+}
+
 var watson = require('watson-developer-cloud');
 var config = require('./config');  // gets our username and passwords from the config.js files
 var speech_to_text = watson.speech_to_text({
@@ -280,30 +304,6 @@ process.on('SIGINT', function () {
 /*********************************************************************
  * Step #8: Commands for LED
  **********************************************************************/
-
-var ws281x = require('rpi-ws281x-native');
-var NUM_LEDS = 1;        // Number of LEDs
-ws281x.init(NUM_LEDS);   // initialize LEDs
-
-var color = new Uint32Array(NUM_LEDS);  // array that stores colors for leds
-color[0] = 0xffffff;                    // default to white
-
-// note that colors are specified as Green-Red-Blue, not Red-Green-Blue
-// e.g. 0xGGRRBB instead of 0xRRGGBB
-var colorPalette = {
-    "red": 0x00ff00,
-    "read": 0x00ff00, // sometimes, STT hears "read" instead of "red"
-    "green": 0xff0000,
-    "blue": 0x0000ff,
-    "purple": 0x008080,
-    "yellow": 0xffff00,
-    "magenta": 0x00ffff,
-    "orange": 0xa5ff00,
-    "aqua": 0xff00ff,
-    "white": 0xffffff,
-    "off": 0x000000,
-    "on": 0xffffff
-}
 
 // ----  reset LED before exit
 process.on('SIGINT', function () {
