@@ -319,10 +319,10 @@ function translatetext(msg) {
     text: msg.substr (msg.indexOf("translate") +9, msg.length),
     source: 'en',
     target: 'es'
-  }).translation, function(err, translation) {
+  }, function(err, translation) {
     if (err)
       console.log(err)
     else
       console.log(translation);
-  })
+  }).translation)
 }
