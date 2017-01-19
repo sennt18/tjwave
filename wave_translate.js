@@ -1,9 +1,9 @@
 /************************************************************************
 * Step #1: Configuring your Bluemix Credentials
 *************************************************************************/
+
 var pigpio = require('pigpio')
 pigpio.initialize();
-
 
 var watson = require('watson-developer-cloud');
 var config = require('./config');  // gets our username and passwords from the config.js files
@@ -36,7 +36,6 @@ var _ = require('underscore');
 * Step #2: Configuring the Microphone
 *************************************************************************/
 
-// Initiate Microphone Instance to Get audio samples
 var mic = require('mic');
 var micInstance = mic({ 'rate': '44100', 'channels': '2', 'debug': false, 'exitOnSilence': 6 });
 var micInputStream = micInstance.getAudioStream();
@@ -52,15 +51,14 @@ micInputStream.on('error', function(err) {
 micInputStream.on('silence', function() {
   // detect silence.
 });
+
 micInstance.start();
 console.log("TJ is listening, you may speak now.");
 
 /************************************************************************
 * Step #3: Converting your Speech Commands to Text
-************************************************************************
-In this step, the audio sample is sent (piped) to "Watson Speech to Text" to transcribe.
-The service converts the audio to text and saves the returned text in "textStream"
-*/
+*************************************************************************/
+
 var textStream = micInputStream.pipe(
   speech_to_text.createRecognizeStream({
     content_type: 'audio/l16; rate=44100; channels=2'
@@ -69,21 +67,16 @@ var textStream = micInputStream.pipe(
 
 /*********************************************************************
 * Step #4: Parsing the Text
-*********************************************************************
-In this step, we parse the text to look for commands such as "ON" or "OFF".
-You can say any variations of "lights on", "turn the lights on", "turn on the lights", etc.
-You would be able to create your own customized command, such as "good night" to turn the lights off.
-What you need to do is to go to parseText function and modify the text.
-*/
+**********************************************************************/
 
 textStream.setEncoding('utf8');
 textStream.on('data', function(str) {
-  console.log(' ===== Speech to Text ===== : ' + str); // print each text we receive
+  console.log(' ===== Speech to Text ===== : ' + str);
   parseText(str);
 });
 
 textStream.on('error', function(err) {
-  console.log(' === Watson Speech to Text : An Error has occurred ===== \nYou may have exceeded your payload quota.') ; // handle errors
+  console.log(' === Watson Speech to Text : An Error has occurred ===== \nYou may have exceeded your payload quota.') ;
   console.log(err + "\n Press <ctrl>+C to exit.") ;
 });
 
@@ -113,39 +106,29 @@ function parseText(str){
     dance();
   }else if ((containsTurn || containsChange || containsSet) && containsLight) {
     setLED(str);
-  } else if (containsDisco) {
+  }else if (containsDisco) {
     discoParty();
-  } else if (translate) {
+  }else if (translate) {
     translatetext(str);
   }else{
     if (str.length > 10){
       speak("sorry, I haven't been taught to understand that.")
     }
   }
-
-
 }
 
 /*********************************************************************
 * Step #5: Wave Arm
-*********************************************************************
-*/
+**********************************************************************/
 
 var mincycle = 500; var maxcycle = 2300 ;
 var dutycycle = mincycle;
 var iswaving = false ;
 
-// Setup software PWM on pin 26, GPIO7.
-
-/**
-* Wave the arm of your robot X times with an interval
-* @return {[type]} [description]
-*/
 function waveArm(action) {
   iswaving = true ;
   var Gpio = pigpio.Gpio;
   var motor = new Gpio(7, {mode: Gpio.OUTPUT});
-  //pigpio.terminate();
   var times =  8 ;
   var interval = 700 ;
 
@@ -177,18 +160,15 @@ function waveArm(action) {
   }
 }
 
-
 /*********************************************************************
 * Step #6: Convert Text to Speech and Play
-*********************************************************************
-*/
+**********************************************************************/
 
 var Sound = require('node-aplay');
 var soundobject ;
-//speak("testing speaking")
 function speak(textstring){
 
-  micInstance.pause(); // pause the microphone while playing
+  micInstance.pause();
   var params = {
     text: textstring,
     voice: config.voice,
@@ -203,21 +183,19 @@ function speak(textstring){
       if (!iswaving && !isplaying) {
         micInstance.resume();
       }
-
     });
   });
-
 }
 
 /*********************************************************************
-* Piece #7: Play a Song and dance to the rythm!
-*********************************************************************
-*/
+* Piece #7: Dance to a Song
+**********************************************************************/
+
 var pcmdata = [] ;
 var samplerate ;
 var soundfile = "sounds/club.wav"
 var threshodld = 0 ;
-//decodeSoundFile(soundfile);
+
 function decodeSoundFile(soundfile){
   console.log("decoding mp3 file ", soundfile, " ..... ")
   fs.readFile(soundfile, function(err, buf) {
@@ -232,9 +210,8 @@ function decodeSoundFile(soundfile){
   })
 }
 
-//dance();
 function dance(){
-  speak("Sure. I will play a song.") ;
+  speak("I would love to. Let me play a song to dance to.") ;
   decodeSoundFile(soundfile);
 }
 
@@ -272,20 +249,14 @@ function findPeaks(pcmdata, samplerate, threshold){
   }, interval,pcmdata);
 }
 
-
-
-// ---- Stop PWM before exit
 process.on('SIGINT', function () {
   pigpio.terminate();
   process.nextTick(function () { process.exit(0); });
 });
 
 /*********************************************************************
- * Step #5: Switching the LED light
- *********************************************************************
- Once the command is recognized, the led light gets changed to reflect that.
- The npm "onoff" library is used for this purpose. https://github.com/fivdi/onoff
-*/
+ * Step #8: Commands for LED
+ **********************************************************************/
 
 var ws281x = require('rpi-ws281x-native');
 var NUM_LEDS = 1;        // Number of LEDs
@@ -302,7 +273,7 @@ var colorPalette = {
     "green": 0xff0000,
     "blue": 0x0000ff,
     "purple": 0x008080,
-    "yellow": 0xc1ff35,
+    "yellow": 0xffff00,
     "magenta": 0x00ffff,
     "orange": 0xa5ff00,
     "aqua": 0xff00ff,
@@ -340,12 +311,12 @@ function discoParty() {
 }
 
 /************************************************************************
-* Step #6: Translate Text
+* Step #9: Translate Text
 *************************************************************************/
 
-function translatetext() {
-  language_translator.translate({
-    text: '(str)',
+function translatetext(msg) {
+  language_translator.translate {
+    text: msg.substr (msg.indexOf("translate"), msg.length),
     source: 'en',
     target: 'es'
   }, function(err, translation) {
@@ -354,4 +325,4 @@ function translatetext() {
     else
       console.log(translation);
   }
-})
+}
