@@ -354,4 +354,4 @@ function translatetext() {
     else
       console.log(translation);
   }
-});
+})
