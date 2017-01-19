@@ -315,15 +315,14 @@ function discoParty() {
 *************************************************************************/
 
 function translatetext(msg) {
-  language_translator.translate({
+   speak (language_translator.translate({
     text: msg.substr (msg.indexOf("translate") +9, msg.length),
     source: 'en',
     target: 'es'
-  }, function(err, translation) {
+  }).translation, function(err, translation) {
     if (err)
       console.log(err)
     else
       console.log(translation);
-      speak (translations.translation);
   })
 }
