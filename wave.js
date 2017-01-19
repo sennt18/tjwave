@@ -78,7 +78,7 @@ The service converts the audio to text and saves the returned text in "textStrea
 */
 var textStream = micInputStream.pipe(
   speech_to_text.createRecognizeStream({
-    content_type: 'audio/l16; rate=44100; channels=3'
+    content_type: 'audio/l16; rate=44100'
   })
 );
 
