@@ -23,8 +23,8 @@ var text_to_speech = watson.text_to_speech({
 
 var watson = require('watson-developer-cloud');
 var language_translator = watson.language_translator({
-  username: '{username}',
-  password: '{password}',
+  username: config.TUsername,
+  password: config.TPassword,
   version: 'v2'
 });
 
