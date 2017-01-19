@@ -21,11 +21,11 @@ var text_to_speech = watson.text_to_speech({
   version: 'v1'
 });
 
-var watson = require('watson-developer-cloud');
-var language_translator = watson.language_translator({
+var LanguageTranslatorV2 = require('watson-developer-cloud/language-translator/v2');
+var language_translator = new LanguageTranslatorV2({
   username: config.TUsername,
   password: config.TPassword,
-  version: 'v2'
+  url: 'https://gateway.watsonplatform.net/language-translator/api/'
 });
 
 var AudioContext = require('web-audio-api').AudioContext
