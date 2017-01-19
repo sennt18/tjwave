@@ -108,6 +108,11 @@ function parseText(str){
   var whatisYourname = str.indexOf("what") >= 0 && str.indexOf("your") >= 0 && str.indexOf("name") >= 0  ;
   var introductions = str.indexOf("my") >= 0 && str.indexOf("name") >= 0 && str.indexOf("is") >= 0  ;
   var canYouDance = str.indexOf("can") >= 0 && str.indexOf("you") >= 0 && str.indexOf("dance") >= 0  ;
+  var containsTurn = str.indexOf("turn") >= 0;
+  var containsChange = str.indexOf("change") >= 0;
+  var containsSet = str.indexOf("set") >= 0;
+  var containsLight = str.indexOf("the light") >= 0;
+  var containsDisco = str.indexOf("disco") >= 0; 
 
   if (containsWaveArm) {
     speak("Ok, I will wave my arm. Just for you.");
@@ -120,6 +125,10 @@ function parseText(str){
     speak(" Hi. My name is TJ.");
   }else if (canYouDance){
     dance();
+  }else if ((containsTurn || containsChange || containsSet) && containsLight) {
+     setLED(str);
+  } else if (containsDisco) {
+     discoParty();
   }else{
     if (str.length > 10){
       speak("sorry, I haven't been taught to understand that.")
@@ -282,3 +291,61 @@ process.on('SIGINT', function () {
   pigpio.terminate();
   process.nextTick(function () { process.exit(0); });
 });
+
+/*********************************************************************
+ * Step #5: Switching the LED light
+ *********************************************************************
+ Once the command is recognized, the led light gets changed to reflect that.
+ The npm "onoff" library is used for this purpose. https://github.com/fivdi/onoff
+*/
+
+var ws281x = require('rpi-ws281x-native');
+var NUM_LEDS = 1;        // Number of LEDs
+ws281x.init(NUM_LEDS);   // initialize LEDs
+
+var color = new Uint32Array(NUM_LEDS);  // array that stores colors for leds
+color[0] = 0xffffff;                    // default to white
+
+// note that colors are specified as Green-Red-Blue, not Red-Green-Blue
+// e.g. 0xGGRRBB instead of 0xRRGGBB
+var colorPalette = {
+    "red": 0x00ff00,
+    "read": 0x00ff00, // sometimes, STT hears "read" instead of "red"
+    "green": 0xff0000,
+    "blue": 0x0000ff,
+    "purple": 0x008080,
+    "yellow": 0xc1ff35,
+    "magenta": 0x00ffff,
+    "orange": 0xa5ff00,
+    "aqua": 0xff00ff,
+    "white": 0xffffff,
+    "off": 0x000000,
+    "on": 0xffffff
+}
+
+// ----  reset LED before exit
+process.on('SIGINT', function () {
+    ws281x.reset();
+    process.nextTick(function () { process.exit(0); });
+});
+
+function setLED(msg){
+    var words = msg.split(" ");
+    for (var i = 0; i < words.length; i++) {
+        if (words[i] in colorPalette) {
+            color[0] = colorPalette[words[i]];
+            break;
+        }
+    }
+    ws281x.render(color);
+}
+
+function discoParty() {
+    for (i = 0; i < 30; i++) {
+        setTimeout(function() {
+            var colors = Object.keys(colorPalette);
+            var randIdx = Math.floor(Math.random() * colors.length);
+            var randColor = colors[randIdx];
+            setLED(randColor);
+        }, i * 250);
+    }
