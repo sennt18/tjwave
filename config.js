@@ -19,3 +19,7 @@ exports.VisionKey = '5c0918238cbf7a6899c08ed4675e321050540325' ;
 exports.VisionVersion = '2016-05-19' ;
 
 exports.version = 'v1' ;
+
+// Credentials for Translation Service
+exports.TPassword = 'kMgDHVS75YnS' ;
+exports.TUsername = '6758b857-d2cd-4fd9-a475-921bdf6f68aa' ;
