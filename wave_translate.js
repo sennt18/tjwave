@@ -78,7 +78,7 @@ micInputStream.on('silence', function() {
 
 micInstance.start();
 console.log("TJ is listening, you may speak now.");
-ws281x.render('blue');
+ws281x.render(0x0000ff);
 
 /************************************************************************
 * Step #3: Converting your Speech Commands to Text
