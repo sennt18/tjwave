@@ -1,22 +1,6 @@
-/**
-
-
-/************************************************************************
-* Control a NeoPixel LED unit and servo motor connected to a Raspberry Pi pin through voice commands
-* Must run with root-level protection
-* sudo node wave.js
-
-
-Follow the instructions in XXX to
-get the system ready to run this code.
-*/
-
 /************************************************************************
 * Step #1: Configuring your Bluemix Credentials
-************************************************************************
-In this step, the audio sample (pipe) is sent to "Watson Speech to Text" to transcribe.
-The service converts the audio to text and saves the returned text in "textStream"
-*/
+*************************************************************************/
 var pigpio = require('pigpio')
 pigpio.initialize();
 
@@ -37,19 +21,20 @@ var text_to_speech = watson.text_to_speech({
   version: 'v1'
 });
 
+var watson = require('watson-developer-cloud');
+var language_translator = watson.language_translator({
+  username: '{username}',
+  password: '{password}',
+  version: 'v2'
+});
+
 var AudioContext = require('web-audio-api').AudioContext
 context = new AudioContext
 var _ = require('underscore');
 
-
-
 /************************************************************************
 * Step #2: Configuring the Microphone
-************************************************************************
-In this step, we configure your microphone to collect the audio samples as you talk.
-See https://www.npmjs.com/package/mic for more information on
-microphone input events e.g on error, startcomplete, pause, stopcomplete etc.
-*/
+*************************************************************************/
 
 // Initiate Microphone Instance to Get audio samples
 var mic = require('mic');
@@ -113,6 +98,7 @@ function parseText(str){
   var containsSet = str.indexOf("set") >= 0;
   var containsLight = str.indexOf("the light") >= 0;
   var containsDisco = str.indexOf("disco") >= 0; 
+  var translate = str.indexOf("translate") >= 0;
 
   if (containsWaveArm) {
     speak("Ok, I will wave my arm. Just for you.");
@@ -126,9 +112,11 @@ function parseText(str){
   }else if (canYouDance){
     dance();
   }else if ((containsTurn || containsChange || containsSet) && containsLight) {
-     setLED(str);
+    setLED(str);
   } else if (containsDisco) {
-     discoParty();
+    discoParty();
+  } else if (translate) {
+    translatetext(str);
   }else{
     if (str.length > 10){
       speak("sorry, I haven't been taught to understand that.")
@@ -350,3 +338,20 @@ function discoParty() {
         }, i * 250);
     }
 }
+
+/************************************************************************
+* Step #6: Translate Text
+*************************************************************************/
+
+function translatetext() {
+  language_translator.translate({
+    text: '(str)',
+    source: 'en',
+    target: 'es'
+  }, function(err, translation) {
+    if (err)
+      console.log(err)
+    else
+      console.log(translation);
+  }
+});
