@@ -25,7 +25,7 @@ var watson = require('watson-developer-cloud');
 var language_translator = watson.language_translator({
   username: config.TUsername,
   password: config.TPassword,
-  version: 'v2'
+  version: 'LanguageTranslationV2'
 });
 
 var AudioContext = require('web-audio-api').AudioContext
