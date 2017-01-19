@@ -25,5 +25,5 @@ exports.TPassword = 'kSiqGjeIitgH' ;
 exports.TUsername = 'cb298f09-f17d-4d9e-b93b-b80711fee8f3' ;
 
 //Voice Customization
-exports.ENvoice = en-US_MichaelVoice
-exports.ESvoice = es-LA_SofiaVoice
+exports.ENvoice = 'en-US_MichaelVoice'
+exports.ESvoice = 'es-LA_SofiaVoice'
