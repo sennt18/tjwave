@@ -349,3 +349,4 @@ function discoParty() {
             setLED(randColor);
         }, i * 250);
     }
+}
