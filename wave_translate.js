@@ -114,31 +114,37 @@ function parseText(str){
   var containsTurn = str.indexOf("turn") >= 0;
   var containsChange = str.indexOf("change") >= 0;
   var containsSet = str.indexOf("set") >= 0;
-  var containsLight = str.indexOf("the light") >= 0;
+  var containsLight = str.indexOf("light") >= 0;
   var containsDisco = str.indexOf("disco") >= 0; 
   var translate = str.indexOf("translate") >= 0;
 
   if (containsWaveArm) {
-    speak("Ok, I will wave my arm. Just for you.");
+    ws281x.render(0xff0000);
+    speak("I would love to wave my arm.");
     waveArm("wave") ;
   }else if (introduceYourself){
-    speak(" Hi, my name is TJ.");
+    ws281x.render(0xff0000);
+    speak(" Hi, my name is TJ Bot, but you can call me TJ.");
   }else if (whatisYourname){
+    ws281x.render(0xff0000)
     speak(" My name is TJ Bot. You can call me TJ");
   }else if (introductions){
+    ws281x.render(0xff0000)
     speak(" Hi. My name is TJ.");
   }else if (canYouDance){
+    discoParty();
     dance();
   }else if ((containsTurn || containsChange || containsSet) && containsLight) {
     setLED(str);
   }else if (containsDisco) {
     discoParty();
   }else if (translate) {
+    ws281x.render(0xff0000)
     translatetext(str);
   }else{
     if (str.length > 10){
+      ws281x.render(0x00ff00)
       speak("Sorry. Could you repeat that?")
-       ws281x.render('red')
     }
   }
 }
