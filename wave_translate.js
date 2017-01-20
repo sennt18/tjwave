@@ -29,12 +29,6 @@ var colorPalette = {
     "on": 0xffffff
 }
 
-// ----  reset LED before exit
-process.on('SIGINT', function () {
-    ws281x.reset();
-    process.nextTick(function () { process.exit(0); });
-});
-
 var watson = require('watson-developer-cloud');
 var config = require('./config');  // gets our username and passwords from the config.js files
 var speech_to_text = watson.speech_to_text({
@@ -154,6 +148,12 @@ function parseText(str){
     }
   }
 }
+
+// ----  reset LED before exit
+process.on('SIGINT', function () {
+    ws281x.reset();
+    process.nextTick(function () { process.exit(0); });
+});
 
 /*********************************************************************
 * Step #5: Wave Arm
