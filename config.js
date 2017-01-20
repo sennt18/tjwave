@@ -1,8 +1,8 @@
 // Please replace the username and password with your bluemix credentials
 
 
-exports.STTPassword = 'OFKnJl8gmdaN' ;
-exports.STTUsername = '4f958211-2551-49fa-a18f-0c0e16ec62d2' ;
+exports.STTPassword = '5Pv7Ry7PoqOr' ;
+exports.STTUsername = '4fe5ba50-cdcb-43f1-951e-64676c61ea9a' ;
 
 //Credentials for Watson Text to Speech service
 
