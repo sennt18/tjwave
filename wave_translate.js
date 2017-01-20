@@ -1,9 +1,6 @@
 /************************************************************************
-* Step #1: Configuring your Bluemix Credentials
+* Step #1: LED Config
 *************************************************************************/
-
-var pigpio = require('pigpio')
-pigpio.initialize();
 
 var ws281x = require('rpi-ws281x-native');
 var NUM_LEDS = 1;        // Number of LEDs
@@ -28,6 +25,13 @@ var colorPalette = {
     "off": 0x000000,
     "on": 0xffffff
 }
+
+/************************************************************************
+* Step #1: Configuring your Bluemix Credentials
+*************************************************************************/
+
+var pigpio = require('pigpio')
+pigpio.initialize();
 
 var watson = require('watson-developer-cloud');
 var config = require('./config');  // gets our username and passwords from the config.js files
@@ -148,12 +152,6 @@ function parseText(str){
     }
   }
 }
-
-// ----  reset LED before exit
-process.on('SIGINT', function () {
-    ws281x.reset();
-    process.nextTick(function () { process.exit(0); });
-});
 
 /*********************************************************************
 * Step #5: Wave Arm
@@ -308,11 +306,6 @@ function findPeaks(pcmdata, samplerate, threshold){
   }, interval,pcmdata);
 }
 
-process.on('SIGINT', function () {
-  pigpio.terminate();
-  process.nextTick(function () { process.exit(0); });
-});
-
 /*********************************************************************
  * Step #8: Commands for LED
  **********************************************************************/
@@ -357,3 +350,13 @@ function translatetext(msg) {
     }
   })
 }
+
+/************************************************************************
+* Step #10: Exit Commands
+*************************************************************************/
+
+process.on('SIGINT', function () {
+  pigpio.terminate();
+  ws281x.reset();
+  process.nextTick(function () { process.exit(0); });
+});
