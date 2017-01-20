@@ -29,6 +29,12 @@ var colorPalette = {
     "on": 0xffffff
 }
 
+// ----  reset LED before exit
+process.on('SIGINT', function () {
+    ws281x.reset();
+    process.nextTick(function () { process.exit(0); });
+});
+
 var watson = require('watson-developer-cloud');
 var config = require('./config');  // gets our username and passwords from the config.js files
 var speech_to_text = watson.speech_to_text({
@@ -78,7 +84,7 @@ micInputStream.on('silence', function() {
 
 micInstance.start();
 console.log("TJ is listening, you may speak now.");
-ws281x.render(0x0000ff);
+ws281x.render(0xffffff);
 
 /************************************************************************
 * Step #3: Converting your Speech Commands to Text
@@ -143,8 +149,8 @@ function parseText(str){
     translatetext(str);
   }else{
     if (str.length > 10){
-      ws281x.render(0x00ff00)
       speak("Sorry. Could you repeat that?")
+      ws281x.render(0x00ff00)
     }
   }
 }
@@ -310,12 +316,6 @@ process.on('SIGINT', function () {
 /*********************************************************************
  * Step #8: Commands for LED
  **********************************************************************/
-
-// ----  reset LED before exit
-process.on('SIGINT', function () {
-    ws281x.reset();
-    process.nextTick(function () { process.exit(0); });
-});
 
 function setLED(msg){
     var words = msg.split(" ");
