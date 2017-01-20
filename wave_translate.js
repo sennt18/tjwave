@@ -143,8 +143,8 @@ function parseText(str){
     translatetext(str);
   }else{
     if (str.length > 10){
-      speak("Sorry. Could you repeat that?")
       ws281x.render(0x00ff00)
+      speak("Sorry. Could you repeat that?")
     }
   }
 }
