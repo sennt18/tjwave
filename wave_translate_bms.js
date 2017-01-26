@@ -1,11 +1,10 @@
-
 /************************************************************************
 * Step #1: LED Config
 *************************************************************************/
 
-var ws281x = require('rpi-ws281x-native');
+//bms01 var ws281x = require('rpi-ws281x-native');
 var NUM_LEDS = 1;        // Number of LEDs
-ws281x.init(NUM_LEDS);   // initialize LEDs
+//bms01 ws281x.init(NUM_LEDS);   // initialize LEDs
 
 var color = new Uint32Array(NUM_LEDS);  // array that stores colors for leds
 color[0] = 0xffffff;                    // default to white
@@ -31,8 +30,8 @@ var colorPalette = {
 * Step #1: Configuring your Bluemix Credentials
 *************************************************************************/
 
-var pigpio = require('pigpio')
-pigpio.initialize();
+ var pigpio = require('pigpio')
+ pigpio.initialize();
 
 var watson = require('watson-developer-cloud');
 var config = require('./config');  // gets our username and passwords from the config.js files
@@ -83,7 +82,7 @@ micInputStream.on('silence', function() {
 
 micInstance.start();
 console.log("TJ is listening, you may speak now.");
-//ws281x.render(0xffffff);
+//bms01 ws281x.render(0xffffff);
 
 /************************************************************************
 * Step #3: Converting your Speech Commands to Text
@@ -111,9 +110,6 @@ textStream.on('error', function(err) {
 });
 
 function parseText(str){
- 
-  micInstance.pause();
-  
   var containsWaveArm = (str.indexOf("raise") >= 0 || str.indexOf("weave") >= 0 || str.indexOf("wave") >= 0 || str.indexOf("wait") >= 0 || str.indexOf("leave") >= 0 ) && (  str.indexOf("arm") >= 0) ;
   var introduceYourself = str.indexOf("introduce") >= 0 && str.indexOf("yourself") >= 0  ;
   var whatisYourname = str.indexOf("what") >= 0 && str.indexOf("your") >= 0 && str.indexOf("name") >= 0  ;
@@ -127,13 +123,17 @@ function parseText(str){
   var translate = str.indexOf("translate") >= 0;
 
   if (containsWaveArm) {
+ //bms01   ws281x.render(0xff0000);
     speak("I would love to wave my arm.");
     waveArm("wave") ;
   }else if (introduceYourself){
+ //bms01   ws281x.render(0xff0000);
     speak(" Hi, my name is TJ Bot, but you can call me TJ.");
   }else if (whatisYourname){
+ //bms01   ws281x.render(0xff0000)
     speak(" My name is TJ Bot. You can call me TJ");
   }else if (introductions){
+ //bms01   ws281x.render(0xff0000)
     speak(" Hi. My name is TJ.");
   }else if (canYouDance){
     discoParty();
@@ -143,13 +143,14 @@ function parseText(str){
   }else if (containsDisco) {
     discoParty();
   }else if (translate) {
+ //bms01   ws281x.render(0xff0000)
     translatetext(str);
   }else{
     if (str.length > 10){
+ //bms01     ws281x.render(0x00ff00)
       speak("Sorry. Could you repeat that?")
     }
   }
-  micInstance.resume();
 }
 
 /*********************************************************************
@@ -180,7 +181,7 @@ function waveArm(action) {
         clearInterval(pulse);
         if (!isplaying) {
           setTimeout(function(){
-//            micInstance.resume();
+            micInstance.resume();
             iswaving = false ;
           }, 500);
         }
@@ -200,10 +201,10 @@ function waveArm(action) {
 **********************************************************************/
 
 var Sound = require('node-aplay');
-
-function speak(textstring){
 var soundobject ;
-//  micInstance.pause();
+function speak(textstring){
+
+  micInstance.pause();
   var params = {
     text: textstring,
     voice: config.ENvoice,
@@ -215,16 +216,18 @@ var soundobject ;
     soundobject.play();
     soundobject.on('complete', function () {
       console.log('Done with playback! for ' + textstring + " iswaving " + iswaving);
-//      if (!iswaving && !isplaying) {
-//        micInstance.resume();
-//      }
+      if (!iswaving && !isplaying) {
+        micInstance.resume();
+      }
     });
   });
 }
 
+var SoundES = require('node-aplay');
+var soundobjectES ;
 function speakES(textstring){
-var soundobject ;
-//  micInstance.pause();
+
+  micInstance.pause();
   var params = {
     text: textstring,
     voice: config.ESvoice,
@@ -232,13 +235,13 @@ var soundobject ;
   };
   text_to_speech.synthesize(params).pipe(fs.createWriteStream('outputES.wav')).on('close', function() {
 
-    soundobject = new Sound("outputES.wav");
-    soundobject.play();
-    soundobject.on('complete', function () {
+    soundobjectES = new SoundES("outputES.wav");
+    soundobjectES.play();
+    soundobjectES.on('complete', function () {
       console.log('Done with playback! for ' + textstring + " iswaving " + iswaving);
-//      if (!iswaving && !isplaying) {
-//        micInstance.resume();
-//      }
+      if (!iswaving && !isplaying) {
+        micInstance.resume();
+      }
     });
   });
 }
@@ -317,7 +320,7 @@ function setLED(msg){
             break;
         }
     }
-    ws281x.render(color);
+//bms01    ws281x.render(color);
 }
 
 function discoParty() {
@@ -336,18 +339,23 @@ function discoParty() {
 *************************************************************************/
 
 function translatetext(msg) {
+  var textES;
   language_translator.translate({
-    text: msg.substr(msg.indexOf("translate")+9, msg.length),
+    text: msg.substr (msg.indexOf("translate")+9, msg.length),
     source: 'en',
     target: 'es'
-  }, function(err, translation) {
+  }, function(err, translationES) {
     if (err)
       console.log(err)
     else {
-      console.log(translation);
-      speakES(translation.translations[0].translation);
+      console.log(translationES);
+      console.log(JSON.stringify(translationES, null, 2));
+      textES = translationES.translations[0].translation;
+  console.log (textES);
+  speakES(textES);
     }
   })
+
 }
 
 /************************************************************************
@@ -356,6 +364,6 @@ function translatetext(msg) {
 
 process.on('SIGINT', function () {
   pigpio.terminate();
-  ws281x.reset();
+//bms  ws281x.reset();
   process.nextTick(function () { process.exit(0); });
 });
