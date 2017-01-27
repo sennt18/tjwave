@@ -2,9 +2,9 @@
 * Step #1: LED Config
 *************************************************************************/
 
-//bms01 var ws281x = require('rpi-ws281x-native');
+var ws281x = require('rpi-ws281x-native');
 var NUM_LEDS = 1;        // Number of LEDs
-//bms01 ws281x.init(NUM_LEDS);   // initialize LEDs
+ws281x.init(NUM_LEDS);   // initialize LEDs
 
 var color = new Uint32Array(NUM_LEDS);  // array that stores colors for leds
 color[0] = 0xffffff;                    // default to white
@@ -82,7 +82,8 @@ micInputStream.on('silence', function() {
 
 micInstance.start();
 console.log("TJ is listening, you may speak now.");
-//bms01 ws281x.render(0xffffff);
+color[0] = 0x0000ff; //blue
+ws281x.render(color);
 
 /************************************************************************
 * Step #3: Converting your Speech Commands to Text
@@ -98,6 +99,7 @@ var textStream = micInputStream.pipe(
 * Step #4: Parsing the Text
 **********************************************************************/
 
+
 textStream.setEncoding('utf8');
 textStream.on('data', function(str) {
   console.log(' ===== Speech to Text ===== : ' + str);
@@ -110,6 +112,9 @@ textStream.on('error', function(err) {
 });
 
 function parseText(str){
+
+  ws281x.render(color);   //reset to current color (changed to red if did not understand)
+
   var containsWaveArm = (str.indexOf("raise") >= 0 || str.indexOf("weave") >= 0 || str.indexOf("wave") >= 0 || str.indexOf("wait") >= 0 || str.indexOf("leave") >= 0 ) && (  str.indexOf("arm") >= 0) ;
   var introduceYourself = str.indexOf("introduce") >= 0 && str.indexOf("yourself") >= 0  ;
   var whatisYourname = str.indexOf("what") >= 0 && str.indexOf("your") >= 0 && str.indexOf("name") >= 0  ;
@@ -121,20 +126,15 @@ function parseText(str){
   var containsLight = str.indexOf("light") >= 0;
   var containsDisco = str.indexOf("disco") >= 0; 
   var translate = str.indexOf("translate") >= 0;
-  var spanish = str.indexOf("spanish") >= 0 || str.indexOf("Spanish") >=0 ;
 
   if (containsWaveArm) {
- //bms01   ws281x.render(0xff0000);
     speak("I would love to wave my arm.");
     waveArm("wave") ;
   }else if (introduceYourself){
- //bms01   ws281x.render(0xff0000);
     speak(" Hi, my name is TJ Bot, but you can call me TJ.");
   }else if (whatisYourname){
- //bms01   ws281x.render(0xff0000)
     speak(" My name is TJ Bot. You can call me TJ");
   }else if (introductions){
- //bms01   ws281x.render(0xff0000)
     speak(" Hi. My name is TJ.");
   }else if (canYouDance){
     discoParty();
@@ -144,13 +144,13 @@ function parseText(str){
   }else if (containsDisco) {
     discoParty();
   }else if (translate) {
- //bms01   ws281x.render(0xff0000)
     translatetext(str);
-  } else if (spanish) {
-    speak("Gracias me voy a la tienda por leche");
   }else{
+     var savecolor = color[0];
+     color[0] = 0x00ff00; //red
+     ws281x.render(color);
+     color[0] = savecolor;
     if (str.length > 10){
- //bms01     ws281x.render(0x00ff00)
       speak("Sorry. Could you repeat that?")
     }
   }
@@ -210,7 +210,7 @@ function speak(textstring){
   micInstance.pause();
   var params = {
     text: textstring,
-    voice: config.ESvoice,
+    voice: config.ENvoice,
     accept: 'audio/wav'
   };
   text_to_speech.synthesize(params).pipe(fs.createWriteStream('output.wav')).on('close', function() {
@@ -241,7 +241,7 @@ function speakES(textstring){
     soundobjectES = new SoundES("outputES.wav");
     soundobjectES.play();
     soundobjectES.on('complete', function () {
-      console.log('Done with playback! for ' + textstring + " iswaving " + iswaving);
+      console.log('Done with playback! ES: ' + textstring + " iswaving " + iswaving);
       if (!iswaving && !isplaying) {
         micInstance.resume();
       }
@@ -323,7 +323,7 @@ function setLED(msg){
             break;
         }
     }
-//bms01    ws281x.render(color);
+    ws281x.render(color);
 }
 
 function discoParty() {
@@ -352,10 +352,7 @@ function translatetext(msg) {
       console.log(err)
     else {
       console.log(translationES);
-      console.log(JSON.stringify(translationES, null, 2));
-      textES = translationES.translations[0].translation;
-  console.log (textES);
-  speakES(textES);
+      speakES(translationES.translations[0].translation);
     }
   })
 
@@ -367,6 +364,6 @@ function translatetext(msg) {
 
 process.on('SIGINT', function () {
   pigpio.terminate();
-//bms  ws281x.reset();
+  ws281x.reset();
   process.nextTick(function () { process.exit(0); });
 });
