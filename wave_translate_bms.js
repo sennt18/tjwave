@@ -121,6 +121,7 @@ function parseText(str){
   var containsLight = str.indexOf("light") >= 0;
   var containsDisco = str.indexOf("disco") >= 0; 
   var translate = str.indexOf("translate") >= 0;
+  var spanish = str.indexOf("spanish") >= 0 || str.indexOf("Spanish") >=0 ;
 
   if (containsWaveArm) {
  //bms01   ws281x.render(0xff0000);
@@ -145,6 +146,8 @@ function parseText(str){
   }else if (translate) {
  //bms01   ws281x.render(0xff0000)
     translatetext(str);
+  } else if (spanish) {
+    speak("Gracias me voy a la tienda por leche");
   }else{
     if (str.length > 10){
  //bms01     ws281x.render(0x00ff00)
@@ -207,7 +210,7 @@ function speak(textstring){
   micInstance.pause();
   var params = {
     text: textstring,
-    voice: config.ENvoice,
+    voice: config.ESvoice,
     accept: 'audio/wav'
   };
   text_to_speech.synthesize(params).pipe(fs.createWriteStream('output.wav')).on('close', function() {
