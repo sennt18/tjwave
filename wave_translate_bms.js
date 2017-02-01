@@ -372,10 +372,6 @@ function translatetext(msg) {
 * Step #10: Exit Commands
 *************************************************************************/
 
-process.on('exit', function () {
-  pigpio.terminate();
-  ws281x.reset();
-});
 
 process.on('SIGINT', function () {
   pigpio.terminate();
