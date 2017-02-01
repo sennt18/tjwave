@@ -289,7 +289,8 @@ function playsound(soundfile){
     isplaying = false;
     motor.servoWrite(0);
     micInstance.resume();
-    console.log("off playback");
+    color[0] = 0x0000ff; //blue after dance
+    ws281x.render(color);
   });
 }
 
@@ -371,7 +372,19 @@ function translatetext(msg) {
 * Step #10: Exit Commands
 *************************************************************************/
 
+process.on('exit', function () {
+  pigpio.terminate();
+  ws281x.reset();
+  process.nextTick(function () { process.exit(0); });
+});
+
 process.on('SIGINT', function () {
+  pigpio.terminate();
+  ws281x.reset();
+  process.nextTick(function () { process.exit(0); });
+});
+
+process.on('uncaughtException', function () {
   pigpio.terminate();
   ws281x.reset();
   process.nextTick(function () { process.exit(0); });
