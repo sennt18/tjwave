@@ -375,7 +375,6 @@ function translatetext(msg) {
 process.on('exit', function () {
   pigpio.terminate();
   ws281x.reset();
-  process.nextTick(function () { process.exit(0); });
 });
 
 process.on('SIGINT', function () {
@@ -384,8 +383,4 @@ process.on('SIGINT', function () {
   process.nextTick(function () { process.exit(0); });
 });
 
-process.on('uncaughtException', function () {
-  pigpio.terminate();
-  ws281x.reset();
-  process.nextTick(function () { process.exit(0); });
-});
+
