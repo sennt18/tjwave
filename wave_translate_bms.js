@@ -159,6 +159,8 @@ function parseText(str){
 /*********************************************************************
 * Step #5: Wave Arm
 **********************************************************************/
+var Gpio = pigpio.Gpio;
+var motor = new Gpio(7, {mode: Gpio.OUTPUT});
 
 var mincycle = 500; var maxcycle = 2300 ;
 var dutycycle = mincycle;
@@ -166,8 +168,6 @@ var iswaving = false ;
 
 function waveArm(action) {
   iswaving = true ;
-  var Gpio = pigpio.Gpio;
-  var motor = new Gpio(7, {mode: Gpio.OUTPUT});
   var times =  8 ;
   var interval = 700 ;
 
@@ -186,6 +186,7 @@ function waveArm(action) {
           setTimeout(function(){
             micInstance.resume();
             iswaving = false ;
+            motor.servoWrite(0);   // turn off servo at end
           }, 500);
         }
         return;
@@ -195,6 +196,7 @@ function waveArm(action) {
     motor.servoWrite(maxcycle);
     setTimeout(function(){
       motor.servoWrite(mincycle);
+      console.log(mincycle);
     }, 400);
   }
 }
@@ -285,6 +287,8 @@ function playsound(soundfile){
   music.on('complete', function () {
     console.log('Done with music playback!');
     isplaying = false;
+    motor.servoWrite(0);
+    console.log("off playback");
   });
 }
 
@@ -298,6 +302,8 @@ function findPeaks(pcmdata, samplerate, threshold){
     if (index >= pcmdata.length) {
       clearInterval(samplesound);
       console.log("finished sampling sound")
+            motor.servoWrite(0);
+	    console.log("off sample");
       return;
     }
     for(var i = index; i < index + step ; i++){
@@ -305,7 +311,9 @@ function findPeaks(pcmdata, samplerate, threshold){
     }
     // Spot a significant increase? Wave Arm
     if(max-prevmax >= prevdiffthreshold){
+      if (isplaying) {
       waveArm("dance");
+      }
     }
     prevmax = max ; max = 0 ; index += step ;
   }, interval,pcmdata);
