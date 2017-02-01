@@ -288,6 +288,7 @@ function playsound(soundfile){
     console.log('Done with music playback!');
     isplaying = false;
     motor.servoWrite(0);
+    micInstance.resume();
     console.log("off playback");
   });
 }
