@@ -196,7 +196,6 @@ function waveArm(action) {
     motor.servoWrite(maxcycle);
     setTimeout(function(){
       motor.servoWrite(mincycle);
-      console.log(mincycle);
     }, 400);
   }
 }
